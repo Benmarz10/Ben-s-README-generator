@@ -4,10 +4,10 @@ function renderLicenseBadge(license) {
   let badge;
   switch (license) {
     case 'MIT':
-      badge = '[![License](https://img.shields.io/badge/License-MIT-yellow.svg)]';
+      badge = '![License](https://img.shields.io/badge/License-MIT-yellow.svg)';
       break;
     case 'GNU':
-      badge = '[![License](https://img.shields.io/badge/License-GNUPL-red.svg)]';
+      badge = '![License](https://img.shields.io/badge/License-GNUPL-red.svg)';
       break;
     default:
       badge = '';
@@ -47,7 +47,9 @@ function renderLicenseSection(license) {
 // TODO: Create a function to generate markdown for README
 function generateMarkdown(data) {
   return `# ${data.title}
-  ![Github licence](http://img.shields.io/badge/license-${data.license}-blue.svg)
+  ${renderLicenseBadge(data.license)}
+  ${renderLicenseLink(data.license)}
+  ${renderLicenseSection(data.license)}
   
   ## Description 
   ${data.description}

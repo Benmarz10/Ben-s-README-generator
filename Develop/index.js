@@ -1,13 +1,12 @@
 //packages needed for this application
 const fs = require('fs')
 const inquirer = require('inquirer');
-const util = require('util');
+//const util = require('util');
+const path = require('path');
 
 const generateMarkdown = require('./utils/generateMarkdown.js');
-const api = require('./utils/api.js');
 //array of questions for user input
-const questions = () => {
-  return inquirer.createPromptModule([
+const questions = [
     {
       type: 'input',
       name: 'github',
@@ -120,13 +119,13 @@ const questions = () => {
       message: 'How can you test this application?',
       default: 'npm test',
     },
-  ]);
-};
+  ];
+
 
 
 //function to write README file
 function writeToFile(fileName, data) {
-  fs.writeToFile(fileName, data, err => {
+  fs.writeFileSync(path.join(process.cwd(), fileName), data, err => {
     if (err) {
       return console.log(err);
     }
@@ -134,25 +133,13 @@ function writeToFile(fileName, data) {
   });
 }
 
-const writeFileAsync = util.promisify(writeToFile);
-
 //function to initialize app
 async function init() {
   try {
-    //inquirer
-    const answers = await inquirer.createPromptModule(questions);
-    console.log("Your answer: ", answers);
-
-    //GitHub api
-    const userInfo = await api.getUser(answers);
-    console.log("Your GitHub info: ", userInfo);
-
-    //generate markdown
-    console.log("Generating your README,")
-    const markdown = generateMarkdown(answers, userInfo);
-    console.log(markdown);
-
-    await writeFileAsync('ExampleREADME.md', markdown);
+    inquirer.prompt(questions).then((responses) => {
+      console.log(responses)
+      writeToFile('README.md', generateMarkdown(responses))
+    })
   } catch (error) {
     console.log(error);
   }
